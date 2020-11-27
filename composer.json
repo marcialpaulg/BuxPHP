@@ -1,0 +1,19 @@
+{
+    "name": "marcialpaulg/buxph",
+    "description": "Bux.ph PHP library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marcial Paul Gargoles",
+            "email": "im.codename@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {"marcialpaulg\\BuxPh\\": "src/"}
+    },
+    "require": {
+        "php": "^7.2.5|^8.0"
+    }
+}
