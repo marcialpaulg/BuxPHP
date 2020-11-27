@@ -2,7 +2,7 @@
 
 require '../vendor/autoload.php';
 
-use marcialpaulg\BuxPh\Bux;
+use Marcialpaulg\BuxPhp\Bux;
 
 $bux = new Bux([
     'app_key' => '{app-key}',

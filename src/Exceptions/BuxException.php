@@ -1,11 +1,11 @@
 <?php
 
-namespace marcialpaulg\BuxPh\Exceptions;
+namespace Marcialpaulg\BuxPhp\Exceptions;
 
 /**
  * Class BuxException
  *
- * @package marcialpaulg\BuxPh
+ * @package Marcialpaulg\BuxPhp
  */
 class BuxException extends \Exception
 {

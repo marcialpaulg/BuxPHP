@@ -1,11 +1,11 @@
 <?php
 
-namespace marcialpaulg\BuxPh;
+namespace Marcialpaulg\BuxPhp;
 
 /**
  * Class Bux
  *
- * @package marcialpaulg\BuxPh
+ * @package Marcialpaulg\BuxPhp
  */
 
 class Bux {
