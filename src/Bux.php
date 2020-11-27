@@ -234,7 +234,7 @@ class Bux {
      */
     public function checkoutUrl(string $id, string $redirect_url = null) : string
     {
-        return 'https://bux.ph/checkout/'.$id.(!empty($rurl) ? '/?redirect_url='.urlencode($redirect_url) : '');
+        return 'https://bux.ph/checkout/'.$id.(!empty($redirect_url) ? '/?redirect_url='.urlencode($redirect_url) : '');
     }
 
     /**
