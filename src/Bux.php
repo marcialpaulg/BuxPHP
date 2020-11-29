@@ -280,10 +280,7 @@ class Bux {
             ],
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_FAILONERROR => false,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_MAXREDIRS => 10,
             CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
             CURLOPT_RESOLVE => []
         ];
