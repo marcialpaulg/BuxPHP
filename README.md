@@ -12,7 +12,6 @@ BuxPHP is a simple PHP library that will help you implement [Bux.ph](https://bux
 - Get payment info
 - Validate IPN message
 - Get available balance, user info, transaction summary, payment settings and payout profiles
-- 
 
 # Installation
 BuxPHP is available in [Packagist](https://packagist.org/), and installation via [Composer](https://getcomposer.org/)
