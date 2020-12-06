@@ -139,24 +139,30 @@ class Bux {
             'app_key' => getenv(static::APP_KEY_ENV_NAME),
             'client_id' => getenv(static::CLIENT_ID_ENV_NAME),
             'client_secret' => getenv(static::CLIENT_SECRET_ENV_NAME),
+            'auth_token' => null,
             'expiry_hours' => static::EXPIRY_HOURS_DEFAULT,
             'txn_fee' => static::TXN_FEE_DEFAULT,
             'ipn_url' => null,
             'version' => 'v1'
         ], $config);
 
-        if(empty($config['app_key']))
-            throw new Exceptions\BuxException('Required "app_id" key not supplied in config and could not find fallback environment variable "' . static::APP_KEY_ENV_NAME.'"');
+        if(empty($config['auth_token'])) {
+            if(empty($config['app_key']))
+                throw new Exceptions\BuxException('Required "app_id" key not supplied in config and could not find fallback environment variable "' . static::APP_KEY_ENV_NAME.'"');
 
-        if(empty($config['client_id']))
-            throw new Exceptions\BuxException('Required "client_id" key not supplied in config and could not find fallback environment variable "' . static::CLIENT_ID_ENV_NAME.'"');
+            if(empty($config['client_id']))
+                throw new Exceptions\BuxException('Required "client_id" key not supplied in config and could not find fallback environment variable "' . static::CLIENT_ID_ENV_NAME.'"');
 
-        if(empty($config['client_secret']))
-            throw new Exceptions\BuxException('Required "client_secret" key not supplied in config and could not find fallback environment variable "' . static::CLIENT_SECRET_ENV_NAME.'"');
+            if(empty($config['client_secret']))
+                throw new Exceptions\BuxException('Required "client_secret" key not supplied in config and could not find fallback environment variable "' . static::CLIENT_SECRET_ENV_NAME.'"');
+        }
+        
 
         $this->app_key = $config['app_key'];
         $this->client_id = $config['client_id'];
         $this->client_secret = $config['client_secret'];
+
+        $this->auth_token = $config['auth_token'];
 
         $this->expiry_hours = $config['expiry_hours'];
         $this->txn_fee = $config['txn_fee'];
@@ -165,7 +171,7 @@ class Bux {
     }
 
     /**
-     * Generate a payment link
+     * Generate a payment link for merchants
      *
      * @param array $request
      * @param bool $return_array
@@ -225,6 +231,90 @@ class Bux {
     }
 
     /**
+     * Generate a payment link for p2p
+     *
+     * @param array $request 
+     * @param bool $return_array 
+     *
+     * @return array|object
+     */
+    public function generatePaymentLink(array $request, bool $return_array = true)
+    {
+
+        $request = array_merge([
+            'amount' => null,
+            'description'=> null,
+            'email' => null,
+            'name' => null,
+            'phone' => null,
+            'expiry' => $this->expiry_hours,
+        ], $request);
+
+        $request['expiryAt'] = $request['expiry'];
+        unset($request['expiry']);
+
+        return $this->apiRequest('POST', 'orders/generate', $request, $return_array);
+    }
+
+    /**
+     * Get payout profiles
+     *
+     * @param bool $return_array
+     *
+     * @return array|object
+     */
+    public function payoutProfiles(bool $return_array = true)
+    {
+        return $this->apiRequest('GET', 'bank_accounts', [], $return_array);
+    }
+
+    /**
+     * Get user info
+     *
+     * @param bool $return_array
+     *
+     * @return array|object
+     */
+    public function getInfo(bool $return_array = true)
+    {
+        return $this->apiRequest('GET', 'get_latest_balance', [], $return_array);
+    }
+
+    /**
+     * Get payment settings
+     *
+     * @param bool $return_array
+     *
+     * @return array|object
+     */
+    public function getPaymentSettings(bool $return_array = true)
+    {
+        return $this->apiRequest('GET', 'settings', [], $return_array);
+    }
+
+    /**
+     * Get user transaction summary
+     *
+     * @param bool $return_array
+     *
+     * @return array|object
+     */
+    public function getTransactionSummary(bool $return_array = true)
+    {
+        return $this->apiRequest('GET', 'dashboard', [], $return_array);
+    }
+
+    /**
+     * Get user transaction summary
+     *
+     * @return float
+     */
+    public function getAvailableBalance()
+    {
+        return $this->getTransactionSummary()['bux_balance'];
+    }
+
+    /**
      * get checkout client url
      *
      * @param string $id
@@ -254,6 +344,20 @@ class Bux {
         return false;
 
         return true;
+    }
+
+    /**
+     * This will remove the "/wp-json/bux-api/update_order/{order-id}" sent my Bux to your IPN
+     *
+     *
+     * @param string $ipn
+     * @param string $escape you can also do "?_ignore="
+     *
+     * @return string
+     */
+    public function muteDefaultWCIPN(string $ipn, string $escape = '#')
+    {
+        return $ipn.$escape;
     }
 
     /**
